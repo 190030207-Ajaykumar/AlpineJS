@@ -1,0 +1,34 @@
+<!-- Autor: Pankaj Kumar Bind -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>GeeksforGeeks</title>
+    <script defer src=
+"https://cdn.jsdelivr.net/npm/alpinejs@2.8.2/dist/alpine.min.js"></script>
+</head>
+
+<body style="background-color: rgb(187, 202, 187);">
+    <h1 style="color: green;">List of Geeks</h1>
+    <div x-data="{
+            search: '',
+            items: ['Pankaj', 'Shravan', 'Ram', 'Jeetu', 'Gaurav'],
+ 
+            get filteredItems() {
+                return this.items.filter(
+                    i => i.toLowerCase().
+                    startsWith(this.search.toLowerCase())
+                );
+            }
+        }">
+        <input x-model="search" placeholder="Search...">
+
+        <ul>
+            <template x-for="item in filteredItems" :key="item">
+                <li x-text="item"></li>
+            </template>
+        </ul>
+    </div>
+</body>
+
+</html>
