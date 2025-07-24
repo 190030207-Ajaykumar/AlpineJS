@@ -14,4 +14,4 @@ Installation of Alpine.js
 
 
 # References
-# > https://medium.com/@Omojunior11/building-a-notes-app-with-alpine-js-a-step-by-step-guide-362117225e1c
+ > https://medium.com/@Omojunior11/building-a-notes-app-with-alpine-js-a-step-by-step-guide-362117225e1c
