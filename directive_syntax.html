@@ -1,17 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 20px;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        /* Hide elements with the x-cloak attribute */
+        [x-cloak] {
+            display: none;
+        }
+        </style>
+    </title>Document</title>
 </head>
 <body>
+    <!-- X-Data -->
     <div x-data="{ open: false }">
-    <button @click="open = !open">Toggle Menu</button>
-    
-    <div x-data="open">
-        Menu content here...
+        <!-- x-on: or (@) -->
+        <button @click="open = true">Toggle Menu</button>
+        <button x-on:click="open = false">Close Menu</button>
+        <br/>
+        <!-- x-show && x-transition -->
+        <div x-show="open" x-cloak x-transition style="background-color: white; padding: 20px; border-radius: 5px; margin-top: 10px;">
+            Menu content here...
+            <!-- x-text -->
+            <span x-text="open ? 'Menu is open' : 'Menu is closed'" x-cloak></span>
+        </div>
+        <!-- x-effect -->
+        <div x-effect="console.log('Open state changed:', open)" x-cloak></div>
     </div>
-</div>
 </body>
 </html>
