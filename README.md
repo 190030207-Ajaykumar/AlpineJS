@@ -26,6 +26,22 @@ Installation of Alpine.js
 # What is the Alpine.js file structure?
   Alpine.js has no file structure also, it doesn’t currently have a CLI. We can expect that in the future, where they can give us a CLI tool we can use to scaffold a quick Alpine.js project. Just like Vue.js CLI does.
 
+# Core Concepts & Directives:
+* x-data: Defines the reactive data object for a component.
+* x-bind (or :): Binds HTML attributes to data expressions (e.g., x-bind:class, x-bind:style).
+* x-on (or @): Attaches event listeners to elements (e.g., x-on:click, x-on:submit).
+* x-text: Updates the text content of an element.
+* x-html: Updates the inner HTML of an element.
+* x-show: Toggles element visibility based on a condition.
+* x-if: Conditionally adds or removes a block of HTML from the DOM.
+* x-for: Iterates over a data set to repeat a block of HTML.
+* x-model: Creates two-way data binding with input elements.
+* x-transition: Adds transition effects to elements when they appear or disappear.
+* x-ref: Creates references to elements, accessible via the $refs magic property.
+* x-init: Runs code when an element is initialized by Alpine.
+* x-cloak: Hides an element until Alpine.js has finished initializing it.
+* x-ignore: Prevents a block of HTML from being initialized by Alpine. 
+
 
 
 # References
