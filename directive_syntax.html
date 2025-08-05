@@ -5,6 +5,41 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script>
+        function persistentCounter() {
+            return {
+            count: Number(localStorage.getItem('count')) || 0,
+            increment() {
+                this.count++
+                localStorage.setItem('count', this.count)
+            },
+            decrement() {
+                this.count--
+                localStorage.setItem('count', this.count)
+            }
+            }
+        }
+        function modifyEmails(){
+    return {
+        emails: JSON.parse(localStorage.getItem('emails')) || [
+            'example4@example.com', 
+            'example5@example.com', 
+            'example6@example.com'
+        ],
+        newEmail: '',
+        addEmail(newEmail){
+            if(newEmail && !this.emails.includes(newEmail)){
+                this.emails.push(newEmail);
+                localStorage.setItem('emails', JSON.stringify(this.emails));
+            }
+        },
+        removeEmail(email){
+            this.emails = this.emails.filter(e => e !== email);
+            localStorage.setItem('emails', JSON.stringify(this.emails));
+        }
+    }
+}
+    </script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -27,12 +62,17 @@
         [x-cloak] {
             display: none;
         }
-        </style>
+    </style>
     </title>Document</title>
 </head>
 <body>
     <!-- X-Data -->
-    <div x-data="{ open: false }">
+    <div x-data="{ 
+        open: false,
+        newItem: '',
+        newEmail: '',
+        items: ['Item 1', 'Item 2', 'Item 3'],        
+     }">
         <!-- x-on: or (@) -->
         <button @click="open = true">Toggle Menu</button>
         <button x-on:click="open = false">Close Menu</button>
@@ -45,6 +85,136 @@
         </div>
         <!-- x-effect -->
         <div x-effect="console.log('Open state changed:', open)" x-cloak></div>
+        <!-- x-model -->
+        <div x-data="{ search: '', items: ['Aj', 'Ak', 'VK', 'MSD', 'RS'] }">
+            <h3 class="border p-3 w-full">Search Items</h3>
+            <input x-model="search" placeholder="Search...">
+            <!-- x-bind:class -->
+            <h3 x-bind:class="{'border p-2 md-2': true}" class="w-full" x-cloak>Items</h3>
+            <ul>
+                <!-- x-for -->
+                 <!-- 🔍 Key Notes:
+                    You must use x-for inside a <template> tag.
+
+                    Use :key (optional but recommended) to help Alpine track DOM elements. -->
+                <template x-for="item in items.filter(i => i.toLowerCase().startsWith(search.toLowerCase()))" :key="item" x-cloak>
+                    <li x-text="item"></li>
+                </template>
+            </ul>
+        </div>
+        <div>
+            <h3 class="border p-3 w-full">Add Items</h3>
+            <ul>
+                <!-- x-for -->
+                <template x-for="item in items" :key="item">
+                    <li x-text="item"></li>
+                </template>
+            </ul>
+            <p>Add new items to the list:</p>
+            <!-- x-model -->
+            <input x-model="newItem" type="text" placeholder="new Item...">
+            <button @click="items.push(newItem); newItem = ''">Add Item</button>
+            <button @click="items = []">Clear Items</button>
+        </div>
+
+        <!-- x-ref(magic property)  -->
+         <!-- 🔹 Why <template> is Required
+            Alpine needs <template> to manage the conditional rendering logic.
+            The real element is cloned and inserted when the condition is true. -->
+
+        <!-- Asignment Q-1 -->
+        <div class="mt-9" x-data="{ inputField: true }">
+            <div class="border bg-black text-white m-4 p-3">
+                <template x-if="inputField">
+                    <input x-ref="inputFieldRef" type="text" placeholder="Input field..." class="mb-2">
+                </template>
+                <button @click="inputField = !inputField" class="m-3 p-2">Toggle Input Field</button>
+            </div>
+        </div>
+        <!-- x-effect Q4 -->
+        <span x-effect="console.log(localStorage.getItem('items'))"></span>
+
+        <!-- x-data with persistent state -->
+        <!-- Asignment Q-2 -->
+        <div x-data="persistentCounter()" class="p-4">
+            <p>Count: <span x-text="count"></span></p>
+            <button @click="increment()">+</button>
+            <button @click="decrement()">-</button>
+        </div>
+
+        <!-- x-data with non-persistent state -->
+        <div x-data="{ count: 0 }">
+            <p x-effect="console.log(count)"></p>
+            <p>Count: <span x-text="count"></span></p>
+            <button x-on:click="count++">Increase</button>
+            <button x-on:click="count--">Decrease</button>
+        </div>
+
+        <div x-data="modifyEmails()" 
+                    class="border p-4 mt-4 ">
+            <template x-for="email in emails" :key="email">
+                <li x-text="email"></li>
+            </template>
+            <input x-model="newEmail" type="text" placeholder="Add new email...">
+            <button @click="addEmail(newEmail); newEmail = '' " type="button">Add email</button>
+        </div>
+        <div x-data="modifyEmails()" class="border p-4 mt-4 ">
+            <template x-for="email in emails" :key="email">
+                <li>
+                    <span x-text="email"></span>
+                    <button @click="removeEmail(email)" type="button">Remove</button>
+                </li>
+            </template>
+            <input x-model="newEmail" type="text" placeholder="Add new email...">
+            <button @click="addEmail(newEmail); newEmail = '' " type="button" >Add email</button>
+        </div>
+
+        <br />
+
+        <!-- Cross-Component Communication -->
+         <div class="border">
+            <button type="button" @click="$dispatch('email-added', newEmail)">Add email</button>
+            <span x-text="newEmail"></span>            
+         </div>
+         <div x-data="{ email: '' }" @email-added.window="alert('New email added: ' + $event.detail); email = $event.detail">
+                <p>New email added: <span x-text="email"></span></p>
+        </div>
+
+        <h2 class="">X-HTML</h2>
+
+        <div x-data="{ htmlContent: 'Initial' }">
+            <button @click="htmlContent = (htmlContent === 'Updated') ? 'Initial' : 'Updated'">Toggle</button>
+            <button @click="htmlContent = '<strong>HTML Content</strong>'">Set HTML</button>
+            <button @click="htmlContent = 'Text Content'">Set Text</button>
+
+            <div x-html="htmlContent" class="mt-2 border p-2"></div>
+            <p x-text="htmlContent" class="mt-2 text-gray-700"></p>
+        </div>
+
+        <h2>
+            X-Model with Textarea
+        </h2>
+        <div x-data="{ message: '' }">
+            <textarea x-model="message"></textarea>
+            <p>You typed: <span x-text="message"></span></p>
+        </div>
+
+        <h2>x-show</h2>
+
+        <div x-data="{ dropdownOpen: false }" class="relative">
+            <button @click="dropdownOpen = !dropdownOpen">Menu</button>
+            
+            <ul 
+                x-show="dropdownOpen" 
+                x-transition
+                class="absolute bg-white border mt-1"
+            >
+                <li>Item 1</li>
+                <li>Item 2</li>
+            </ul>
+        </div>
+
+
     </div>
 </body>
 </html>
